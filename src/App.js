@@ -1,23 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+import MyRouter from './router/MyRouter';
+import Navbar from './components/navbar';
+import Post from './components/post';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function App() {
+  const location = useLocation();
+
+  // Hide Navbar on login page
+  const hideNavbarRoutes = ['/', '/register'];
+  
+  const shouldShowNavbar = !hideNavbarRoutes.includes(location.pathname);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {shouldShowNavbar && <Navbar />}
+      <MyRouter />
     </div>
   );
 }

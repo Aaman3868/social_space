@@ -25,6 +25,7 @@ function Login() {
       const { accesstoken, user } = response.data.data;
       localStorage.setItem('token', accesstoken);
       localStorage.setItem('username', user.username);
+      localStorage.setItem('user_id', user._id);
       alert('Login successful!');
       window.location.href = '/Home';
     } catch (error) {

@@ -1,100 +1,77 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const Post = () => {
+const PostsList = () => {
+  const [posts, setPosts] = useState([]);
+
+  const fetchPosts = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/v1/posts");
+      setPosts(res.data.data); // Assuming response uses ApiResponse format: { success, message, data }
+    } catch (err) {
+      console.error("Failed to fetch posts", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
   return (
-    <div className="card shadow-sm mb-4">
-     {/* Header */}
-  <div className="card-header d-flex justify-content-between align-items-center bg-white">
-    <div className="d-flex align-items-center">
-      <img
-        src="https://i.pravatar.cc/40"
-        alt="User"
-        className="rounded-circle me-2"
-        width="40"
-        height="40"
-      />
-      <div>
-        <h6 className="mb-0 fw-bold">Aaman Mujawar</h6>
-        <small className="text-muted">Just now</small>
-      </div>
-    </div>
-    <div className="dropdown">
-      <button
-        className="btn btn-sm"
-        type="button"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        <i className="bi bi-three-dots fs-5 text-secondary"></i>
-      </button>
-      <ul className="dropdown-menu dropdown-menu-end">
-        <li><button className="dropdown-item">Block</button></li>
-        <li><button className="dropdown-item">Report</button></li>
-      </ul>
-    </div>
-  </div>
+    <>
+      {posts.map((post) => (
+        <div className="card shadow-sm mb-4" key={post._id}>
+          {/* Header */}
+          <div className="card-header d-flex justify-content-between align-items-center bg-white">
+            <div className="d-flex align-items-center">
+              <img
+                src={post.author?.avatar || "https://i.pravatar.cc/40"}
+                alt="User"
+                className="rounded-circle me-2"
+                width="40"
+                height="40"
+              />
+              <div>
+                <h6 className="mb-0 fw-bold">{post.author?.fullname || "Unknown"}</h6>
+                <small className="text-muted">
+                  {new Date(post.createdAt).toLocaleString()}
+                </small>
+              </div>
+            </div>
+          </div>
 
-  {/* Content */}
-  <div className="card-body">
-    <p>This is a sample post with an image. You can replace it with dynamic data.</p>
-    <img
-      src="https://picsum.photos/600/300"
-      alt="Post"
-      className="img-fluid rounded"
-    />
-  </div>
+          {/* Content */}
+          <div className="card-body">
+            <p>{post.text}</p>
+            {post.media.length > 0 && post.media[0].endsWith(".mp4") ? (
+              <video controls className="img-fluid rounded">
+                <source src={post.media[0]} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : post.media.length > 0 ? (
+              <img
+                src={post.media[0]}
+                alt="Post"
+                className="img-fluid rounded"
+              />
+            ) : null}
+          </div>
 
-  {/* Footer buttons */}
-  <div className="card-footer bg-white">
-    <div className="d-flex justify-content-around mb-2">
-      <button className="btn btn-light d-flex align-items-center">
-        <i className="bi bi-hand-thumbs-up me-1"></i> Like
-      </button>
-      <button className="btn btn-light d-flex align-items-center">
-        <i className="bi bi-chat-left-text me-1"></i> Comment
-      </button>
-      <button className="btn btn-light d-flex align-items-center">
-        <i className="bi bi-share me-1"></i> Share
-      </button>
-    </div>
-
-    {/* Comments */}
-    <div className="mt-2">
-      <div className="d-flex mb-2">
-        <img
-          src="https://i.pravatar.cc/30?img=11"
-          alt="Commenter"
-          className="rounded-circle me-2"
-          width="30"
-          height="30"
-        />
-        <div>
-          <div className="bg-light rounded px-3 py-2">
-            <strong>Lori Ferguson</strong>
-            <p className="mb-0 small">Wow, this is awesome!</p>
+          {/* Footer */}
+          <div className="card-footer bg-white">
+            <div className="d-flex justify-content-around mb-2">
+              <button className="btn btn-light d-flex align-items-center">
+                <i className="bi bi-hand-thumbs-up me-1"></i> Like
+              </button>
+              <button className="btn btn-light d-flex align-items-center">
+                <i className="bi bi-share me-1"></i> Share
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div className="d-flex">
-        <img
-          src="https://i.pravatar.cc/30?img=14"
-          alt="Commenter"
-          className="rounded-circle me-2"
-          width="30"
-          height="30"
-        />
-        <div>
-          <div className="bg-light rounded px-3 py-2">
-            <strong>Judy Nguyen</strong>
-            <p className="mb-0 small">Looks great! Keep it up 🔥</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-    </div>
+      ))}
+    </>
   );
 };
 
-export default Post;
+export default PostsList;

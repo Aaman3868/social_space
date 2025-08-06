@@ -15,8 +15,7 @@ const handleFileChange = (e) => {
 };
 
 const handlePost = async () => {
-  const userId = localStorage.getItem("user_id"); // ✅ Get _id from localStorage
-
+  const userId = localStorage.getItem("user_id"); 
   if (!userId) {
     alert("User not logged in!");
     return;
@@ -28,7 +27,7 @@ const handlePost = async () => {
   }
 
   const formData = new FormData();
-  formData.append("author", userId); // ✅ Set author from localStorage
+  formData.append("author", userId); 
   formData.append("text", text);
   formData.append("privacy", privacy);
   mediaFiles.forEach((file) => formData.append("media", file));

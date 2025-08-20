@@ -4,6 +4,26 @@ import axios from "axios";
 function NewFriends() {
   const [users, setUsers] = useState([]);
 
+  const [getrequest, SendRequest] = useState([]);
+
+  const sentrequest = async (id) => {
+  try {
+    const res = await fetch(`http://localhost:8000/api/v1/friends/request/${id}`, {
+      method: "POST",
+      credentials: "include", // if using cookies/JWT
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+    alert(data.message);
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong");
+  }
+};
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -53,7 +73,7 @@ function NewFriends() {
             </div>
           </div>
           <button
-            className={`btn btn-sm rounded-circle ${
+            onClick={() => sentrequest(user._id)} className={`btn btn-sm rounded-circle ${
               user.following ? "btn-primary" : "btn-light border"
             }`}
           >
